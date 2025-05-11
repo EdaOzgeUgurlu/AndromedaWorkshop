@@ -1,0 +1,32 @@
+<!-- Views/Car/Index.cshtml -->
+@model IEnumerable<CarManagementSystem.Models.Car>
+
+<h2>Araba Listesi</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Marka</th>
+            <th>Model</th>
+            <th>Yıl</th>
+            <th>Renk</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var car in Model)
+        {
+            <tr>
+                <td>@car.Make</td>
+                <td>@car.Model</td>
+                <td>@car.Year</td>
+                <td>@car.Color</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = car.Id })">Düzenle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Create")">Yeni Araba Ekle</a>

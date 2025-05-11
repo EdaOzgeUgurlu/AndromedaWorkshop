@@ -1,0 +1,64 @@
+// Controllers/CarController.cs
+using Microsoft.AspNetCore.Mvc;
+using CarManagementSystem.Data;
+using CarManagementSystem.Models;
+using System.Linq;
+
+public class CarController : Controller
+{
+    private readonly CarDbContext _context;
+
+    public CarController(CarDbContext context)
+    {
+        _context = context;
+    }
+
+    // Araba Listesi
+    public IActionResult Index()
+    {
+        var cars = _context.Cars.ToList(); // Tüm arabaları listele
+        return View(cars);
+    }
+
+    // Yeni Araba Ekle
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Create(Car car)
+    {
+        if (ModelState.IsValid)
+        {
+            _context.Cars.Add(car);  // Yeni araba ekle
+            _context.SaveChanges();  // Veritabanına kaydet
+            return RedirectToAction(nameof(Index)); // Listeye geri yönlendir
+        }
+        return View(car);
+    }
+
+    // Araba Düzenle
+    [HttpGet]
+    public IActionResult Edit(int id)
+    {
+        var car = _context.Cars.FirstOrDefault(c => c.Id == id); // Arabayı bul
+        if (car == null) return NotFound();
+        return View(car);
+    }
+
+    [HttpPost]
+    public IActionResult Edit(int id, Car car)
+    {
+        if (id != car.Id) return BadRequest();
+
+        if (ModelState.IsValid)
+        {
+            _context.Update(car); // Araba bilgilerini güncelle
+            _context.SaveChanges(); // Veritabanına kaydet
+            return RedirectToAction(nameof(Index)); // Listeye geri yönlendir
+        }
+        return View(car);
+    }
+}
